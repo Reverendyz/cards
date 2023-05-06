@@ -1,9 +1,8 @@
-import './App.css';
-import Main from './components/Page/Main';
+import Motivation from './components/Page/Motivation';
 
 function App() {
   return (
-    <Main/>
+    <Motivation/>
   );
 }
 
