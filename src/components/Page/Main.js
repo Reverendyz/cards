@@ -1,11 +1,12 @@
-import { Button, Layout, Menu, Space } from 'antd';
+import { Button, Form, Layout, Menu, Space } from 'antd';
 import { useState } from 'react';
 import Message from '../Card/Message';
 
 export default function Main(){
     const [selected] = useState('0');
     const [cardTitle, setCardTitle] = useState('');
-    const { Header, Content, Footer } = Layout;
+    const [cardDescription, setCardDescription] = useState('');
+    const { Header, Content, Sider, Footer } = Layout;
     const headerMenu = [
         {
             key: '1',
@@ -17,67 +18,97 @@ export default function Main(){
         }
     ];
 
-    
-    var cardsList = [
-        {
-            id: 1,
-            title: "a",
-            description: "congo"
-        }, 
-        {
-            id: 2,
-            title: "b",
-            description: "chipre"
-        }, 
-        {
-            id: 3,
-            title: "c",
-            description: "coke"
-        }, 
-        {
-            id: 4,
-            title: "d",
-            description: "babao"
-        }, 
-        {
-            id: 5,
-            title: "e",
-            description: "cavalo"
-        },
-        {
-            id: 6,
-            title: "sho",
-            description: "ot"
-        }   
-    ];
-    const [cards, setCards] = useState(cardsList);
-    function addCard(name){
-        const newCard = {id: cards.length+1, title: name, description: "This is a new card"};
+    const [cards, setCards] = useState([]);
+    function addCard(title, description){
+        if (!title || !description){
+            return;
+        }
+        const newCard = {id: cards.length+1, title: title, description: description};
         setCards([...cards, newCard]);
-        console.log(newCard);
-        localStorage.setItem("cards", cards);
-        window.location.reload();
     }
     return (
-        <Layout>
-            <Header className='header'>
-                <div className='logo'/>
-                <Menu theme='dark' mode='horizontal' defaultSelectedKeys={[headerMenu[selected].key]} items={headerMenu}/>
-            </Header>
+        <Space 
+            direction='vertical'
+            style={{width: '100%'}}
+            size={[0, 48]}
+            >
             <Layout>
-                <Space direction="vertical" style={{width: '100%'}} size={[0, 48]}>
-                    <Content style={{padding: 24,minHeight: '60vh', textAlign: 'center', backgroundColor: 'white'}}>
-                        <Space direction='horizontal' size={[2,2]} wrap>
-                            <input type='text' value={cardTitle} onChange={(a) => {setCardTitle(a.target.value)}}/>
-                            <Button type='primary' onClick={() =>{addCard(cardTitle)}}>Hit</Button>
-                        </Space>
+                <Header className='header'>
+                    <div className='logo'/>
+                    <Menu 
+                        theme='dark'
+                        mode='horizontal'
+                        defaultSelectedKeys={[headerMenu[selected].key]}
+                        items={headerMenu}
+                    />
+                </Header>
+                <Layout>
+                    <Sider
+                        width={400}
+                        style={{
+                            margin: "0 auto",
+                            padding:"1rem",
+                            backgroundColor: 'white',
+                            textAlign:'left',
+                            alignContent:"center",
+                            }}>
+                        <Form onFinish={() => {addCard(cardTitle, cardDescription)}}
+                            labelCol={{ span: 10 }}
+                            labelAlign='left'
+                            >
+                            <Form.Item
+                                label="Card Title"
+                                name="cardTitle"
+                                rules={[
+                                    {
+                                        required: true,
+                                    }
+                                ]}
+                            >
+                                <input 
+                                    type='text'
+                                    value={cardTitle}
+                                    onChange={(a) => {setCardTitle(a.target.value)}}
+                                />
+                            </Form.Item>
+                            <Form.Item
+                                label="Card Description"
+                                name="cardDescription"
+                                rules={[
+                                    {
+                                        required: true,
+                                    }
+                                ]}
+                            >
+                                <input 
+                                    type='text'
+                                    value={cardDescription}
+                                    onChange={(a) => {setCardDescription(a.target.value)}}
+                                />
+                            </Form.Item>
+                            <Form.Item>
+                                <Button
+                                    type='primary'
+                                    htmlType='submit'>
+                                        Hit
+                                </Button>
+                            </Form.Item>
+                        </Form>
+                    </Sider>
+                    <Content
+                        style={{
+                            backgroundColor: "lightGrey",
+                            height: "86vh",
+                        }}
+                        
+                        >
+                        <Message list={cards}/>
                     </Content>
-                    <Message list={cardsList}/>
-                    <Footer style={{textAlign: 'center'}}>
-                        Made by me and spreaded to the world
-                    </Footer>
-                </Space>
+                </Layout>
+                <Footer style={{textAlign: 'center'}}>
+                    Made by me and spreaded to the world
+                </Footer>
             </Layout>
-        </Layout>    
+        </Space>    
     )
 }
